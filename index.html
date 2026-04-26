@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrainrotMart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,500;9..40,700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #efefef;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(10, 10, 10, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid #272727;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      height: 58px;
+      gap: 1.5rem;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 3px;
+      color: #c8ff00;
+      flex-shrink: 0;
+    }
+
+    .logo em {
+      color: #ff4060;
+      font-style: normal;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      flex: 1;
+    }
+
+    .nav-links a {
+      color: #777;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: #efefef;
+    }
+
+    #cart-indicator {
+      margin-left: auto;
+      background: #c8ff00;
+      color: #000;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+
+
+    #cart-indicator .badge {
+      background: #000;
+      color: #c8ff00;
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-size: 0.72rem;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    
+    .hero {
+      padding: 4.5rem 2rem 2.5rem;
+      text-align: center;
+      background: radial-gradient(ellipse 90% 55% at 50% 0%, #1a2800 0%, transparent 65%);
+      border-bottom: 1px solid #272727;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 11vw, 8rem);
+      line-height: 0.95;
+      letter-spacing: 6px;
+      color: #c8ff00;
+    }
+
+    .hero h1 em {
+      color: #efefef;
+      font-style: normal;
+    }
+
+    .hero p {
+      color: #777;
+      margin-top: 0.7rem;
+      font-size: 0.95rem;
+    }
+
+    
+    .cat-nav {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 1.6rem 2rem 0;
+    }
+
+    .cat-btn {
+      background: transparent;
+      border: 1px solid #272727;
+      color: #777;
+      padding: 0.35rem 1.1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .cat-btn:hover {
+      border-color: #333;
+      color: #efefef;
+    }
+
+    .cat-btn.active {
+      background: #c8ff00;
+      color: #000;
+      border-color: #c8ff00;
+      font-weight: 700;
+    }
+
+    
+    .layout {
+      padding: 2rem;
+      transition: padding-right 0.3s ease;
+    }
+
+    .layout.cart-open {
+      padding-right: calc(360px + 2rem);
+    }
+
+   
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      color: #555;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid #272727;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+
+    .section-title span {
+      color: #c8ff00;
+      font-size: 1rem;
+    }
+
+    
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 0.9rem;
+    }
+
+   
+    .product-card {
+      background: #181818;
+      border: 1px solid #272727;
+      border-radius: 14px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card:hover {
+      border-color: #333;
+      background: #1f1f1f;
+      transform: translateY(-2px);
+    }
+
+    .product-card.in-cart-card {
+      border-color: #c8ff00 !important;
+    }
+
+    .product-card.in-cart-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(200, 255, 0, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .p-img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #222;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .p-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      line-height: 1.35;
+      flex: 1;
+      color: #efefef;
+    }
+
+    .p-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 1px;
+      color: #c8ff00;
+    }
+
+    
+    .add-btn {
+      margin-top: 0.3rem;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.5rem 0.6rem;
+      border-radius: 9px;
+      width: 100%;
+      transition: all 0.18s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .add-btn.state-default {
+      background: rgba(200, 255, 0, 0.1);
+      color: #c8ff00;
+      border: 1px solid rgba(200, 255, 0, 0.25);
+    }
+
+    .add-btn.state-default:hover {
+      background: #c8ff00;
+      color: #000;
+      border-color: #c8ff00;
+    }
+
+    .add-btn.state-added {
+      background: rgba(200, 255, 0, 0.06);
+      color: #c8ff00;
+      border: 1px solid rgba(200, 255, 0, 0.4);
+      cursor: default;
+      opacity: 0.8;
+    }
+
+    
+    #cart-sidebar {
+      position: fixed;
+      top: 58px;
+      right: 0;
+      width: 360px;
+      height: calc(100vh - 58px);
+      background: #111;
+      border-left: 1px solid #272727;
+      display: flex;
+      flex-direction: column;
+      z-index: 199;
+
+      overflow: hidden;
+    }
+
+
+    .cart-head {
+      padding: 1.1rem 1.3rem;
+      border-bottom: 1px solid #272727;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .cart-head h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+    }
+
+    .cart-head h2 span {
+      color: #777;
+      font-size: 0.88rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0;
+      margin-left: 0.4rem;
+    }
+#cart-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    #cart-list::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    #cart-list::-webkit-scrollbar-thumb {
+      background: #272727;
+      border-radius: 99px;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #777;
+      margin-top: 4rem;
+    }
+
+    .empty-state p {
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .cart-row {
+      background: #181818;
+      border: 1px solid #272727;
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: fadeUp 0.2s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .cr-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cr-name {
+      font-weight: 600;
+      font-size: 0.83rem;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cr-price {
+      color: #c8ff00;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      margin-top: 1px;
+    }
+
+    .rm-btn {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      color: #555;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0;
+      transition: color 0.15s;
+    }
+
+    .rm-btn:hover {
+      color: #ff4060;
+    }
+
+    
+    .cart-foot {
+      border-top: 1px solid #272727;
+      padding: 1.1rem 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .total-row .lbl {
+      color: #777;
+      font-size: 0.82rem;
+    }
+
+    .total-row .amt {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.9rem;
+      color: #c8ff00;
+      letter-spacing: 1px;
+    }
+
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-fields input {
+      background: #181818;
+      border: 1px solid #272727;
+      border-radius: 8px;
+      color: #efefef;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      padding: 0.5rem 0.75rem;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    .form-fields input:focus {
+      border-color: #c8ff00;
+    }
+
+    .form-fields input::placeholder {
+      color: #555;
+    }
+
+    .order-btn {
+      background: #ff4060;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: 2px;
+      padding: 0.7rem;
+      border-radius: 10px;
+      width: 100%;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .order-btn:hover:not(:disabled) {
+      background: #e62d50;
+    }
+
+    .order-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .order-btn:disabled {
+      background: #272727;
+      color: #555;
+      cursor: not-allowed;
+    }
+
+    
+    #page-about {
+      display: none;
+      padding: 3rem 2rem;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    #page-about.active {
+      display: block;
+    }
+
+    #page-shop {
+      display: none;
+    }
+
+    #page-shop.active {
+      display: block;
+    }
+
+    .acard {
+      background: #181818;
+      border: 1px solid #272727;
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .acard h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      color: #c8ff00;
+      margin-bottom: 1rem;
+    }
+
+    .acard p {
+      color: #777;
+      line-height: 1.75;
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+    }
+
+    .members {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .member {
+      background: #111;
+      border: 1px solid #272727;
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .member h3 {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .member p {
+      font-size: 0.82rem;
+      color: #777;
+      line-height: 1.5;
+    }
+
+    .refs li {
+      color: #777;
+      font-size: 0.85rem;
+      margin: 0.4rem 0 0 1rem;
+      line-height: 1.5;
+    }
+
+    .refs a {
+      color: #c8ff00;
+      text-decoration: none;
+    }
+
+    .refs a:hover {
+      text-decoration: underline;
+    }
+
+    
+    #toast {
+      position: fixed;
+      bottom: 1.8rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: #1c1c1c;
+      color: #efefef;
+      border: 1px solid #333;
+      padding: 0.55rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      z-index: 9999;
+      pointer-events: none;
+      transition: transform 0.25s ease, opacity 0.25s;
+      opacity: 0;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #c8ff00;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+
+<nav>
+  <div class="logo">Brainrot<em>Mart</em></div>
+  <div class="nav-links">
+    <a href="#" onclick="showPage('shop'); return false;">Shop</a>
+    <a href="#" onclick="showPage('about'); return false;">About</a>
+  </div>
+  <div id="cart-indicator">
+    Cart <span class="badge" id="cart-count">0</span>
+  </div>
+</nav>
+
+
+<div id="cart-sidebar">
+  <div class="cart-head">
+    <h2>Cart <span id="cart-count2"></span></h2>
+  </div>
+  <div id="cart-list">
+    <div class="empty-state">
+
+      <p>Nothing here yet.<br>Start adding stuff!</p>
+    </div>
+  </div>
+  <div class="cart-foot">
+    <div class="total-row">
+      <span class="lbl">Total</span>
+      <span class="amt" id="cart-total">&#8369;0.00</span>
+    </div>
+    <form id="checkout-form" action="http://52.74.133.173/cs3/checkout.php" method="POST" onsubmit="prepareCheckout()">
+      <div class="form-fields">
+        <input type="text" name="cust_name" placeholder="Full Name" required />
+        <input type="email" name="cust_email" placeholder="Email Address" required />
+        <input type="text" name="cust_addr" placeholder="Delivery Address" required />
+        <input type="hidden" name="cust_order" id="cust_order" />
+        <button type="submit" class="order-btn" id="order-btn" disabled>PLACE ORDER</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div id="page-shop" class="active">
+  <div class="hero">
+    <h1>BRAINROT<em>MART</em></h1>
+    <p>The only shop you need. Trust.</p>
+  </div>
+  <div class="cat-nav">
+    <button class="cat-btn active" onclick="filterCat('all', this)">All</button>
+    <button class="cat-btn" onclick="filterCat('toys', this)">Toys</button>
+    <button class="cat-btn" onclick="filterCat('snacks', this)">Snacks</button>
+    <button class="cat-btn" onclick="filterCat('devices', this)">Devices</button>
+    <button class="cat-btn" onclick="filterCat('gaming', this)">Gaming</button>
+  </div>
+  <div class="layout cart-open" id="main-layout">
+    <section class="section" data-cat="toys">
+      <h2 class="section-title"><span>01</span> Toys</h2>
+      <div class="products-grid" id="grid-toys"></div>
+    </section>
+    <section class="section" data-cat="snacks">
+      <h2 class="section-title"><span>02</span> Snacks</h2>
+      <div class="products-grid" id="grid-snacks"></div>
+    </section>
+    <section class="section" data-cat="devices">
+      <h2 class="section-title"><span>03</span> Devices</h2>
+      <div class="products-grid" id="grid-devices"></div>
+    </section>
+    <section class="section" data-cat="gaming">
+      <h2 class="section-title"><span>04</span> Gaming</h2>
+      <div class="products-grid" id="grid-gaming"></div>
+    </section>
+  </div>
+</div>
+
+
+<div id="page-about">
+  <div class="acard">
+    <h2>About BrainrotMart</h2>
+    <p>BrainrotMart is a fictional one-stop online shop for the modern student — toys, snacks, gaming credits, and the latest devices. Whether you want a Brainrot Mystery Box or a Nintendo Switch 2, we got you.</p>
+    <p>Created as a 4th Quarter Summative Assessment for Computer Science 3 (Client-Side Web Development), S.Y. 2025&#8211;2026.</p>
+  </div>
+  <div class="acard">
+    <h2>Our Team</h2>
+    <div class="members">
+      <div class="member"><h3>Member 1</h3><p>HTML structure, product catalog, and category navigation.</p></div>
+      <div class="member"><h3>Member 2</h3><p>CSS styling, responsive design, and visual aesthetic.</p></div>
+      <div class="member"><h3>Member 3</h3><p>JavaScript — cart logic, checkout form, and POST submission.</p></div>
+    </div>
+  </div>
+  <div class="acard">
+    <h2>References</h2>
+    <ul class="refs">
+      <li>MDN Web Docs &#8211; <a href="https://developer.mozilla.org" target="_blank">developer.mozilla.org</a></li>
+      <li>W3Schools &#8211; <a href="https://www.w3schools.com" target="_blank">w3schools.com</a></li>
+      <li>Google Fonts &#8211; <a href="https://fonts.google.com" target="_blank">fonts.google.com</a></li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="toast"><span class="toast-dot"></span><span id="toast-msg"></span></div>
+
+<script>
+  var products = {
+    toys: [
+      { id: 't1', name: 'Nerf Kick Scooter', price: 5499.99, img: 'NerfKickScooter.png' },
+      { id: 't2', name: 'LEGO Star Wars Millennium Falcon', price: 16199.99, img: 'LegoMilleniumFalcon.png' },
+      { id: 't3', name: 'Play-Doh', price: 749.99, img: 'PlayDoh.png' },
+      { id: 't4', name: 'Taco Cat', price: 499.99, img: 'TacoCAT.png' },
+      { id: 't5', name: 'Brainrot Mystery Box', price: 6741.69, img: 'BrainrotMysteryBox.png' }
+    ],
+    snacks: [
+      { id: 's1', name: 'Joyride', price: 349.99, img: 'Joyride.png' },
+      { id: 's2', name: 'Feastables', price: 179.99, img: 'Feastables.png' },
+      { id: 's3', name: 'Nerds', price: 159.99, img: 'Nerds.png' },
+      { id: 's4', name: 'Prime', price: 199.99, img: 'Prime.png' },
+      { id: 's5', name: 'Shades', price: 169.99, img: 'Shades.png' }
+    ],
+    devices: [
+      { id: 'd1', name: 'Nintendo Switch 2', price: 29999.99, img: 'Nintendo-Switch-2-12.png' },
+      { id: 'd2', name: 'PlayStation 5', price: 34999.00, img: 'PS5.png' },
+      { id: 'd3', name: 'Xbox 360', price: 17999.99, img: 'Xbox360.png' },
+      { id: 'd4', name: 'Oculus Quest 2', price: 19999.99, img: 'Quest2.png' },
+      { id: 'd5', name: 'Meta Glasses', price: 47999.99, img: 'MetaGlasses.png' }
+    ],
+    gaming: [
+      { id: 'g1', name: '1000 Robux', price: 599.99, img: 'Robux.png' },
+      { id: 'g2', name: '1000 V-Bucks', price: 749.99, img: 'VBUCKS.png' },
+      { id: 'g3', name: '1 MLBB Diamond', price: 1.99, img: 'Diamonds.png' },
+      { id: 'g4', name: '2100 Valorant Points', price: 749.99, img: 'VP.png' },
+      { id: 'g5', name: '1720 Minecoins', price: 599.99, img: 'Coins.png' }
+    ]
+  };
+
+  var cart = [];
+  var nextId = 0;
+
+  function renderProducts() {
+    Object.keys(products).forEach(function(cat) {
+      var grid = document.getElementById('grid-' + cat);
+      products[cat].forEach(function(p) {
+        var card = document.createElement('article');
+        card.className = 'product-card';
+        card.id = 'card-' + p.id;
+        card.innerHTML =
+          '<img class="p-img" src="' + p.img + '" alt="' + p.name + '" />' +
+          '<div class="p-name">' + p.name + '</div>' +
+          '<div class="p-price">₱' + p.price.toLocaleString('en-PH', { minimumFractionDigits: 2 }) + '</div>' +
+          '<button class="add-btn state-default" id="btn-' + p.id + '" onclick="addToCart(\'' + p.id + '\')">+ Add to Cart</button>';
+        grid.appendChild(card);
+      });
+    });
+  }
+
+  function addToCart(id) {
+    if (cart.some(function(i) { return i.id === id; })) {
+      showToast('Already in your cart!');
+      return;
+    }
+    var p = findProduct(id);
+    if (!p) return;
+    cart.push({ id: p.id, name: p.name, price: p.price, cartId: nextId++ });
+    setButtonAdded(id);
+    refreshCart();
+    showToast('Added: ' + p.name);
+  }
+
+  function removeFromCart(cartId) {
+    var idx = -1;
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].cartId === cartId) { idx = i; break; }
+    }
+    if (idx === -1) return;
+    var removed = cart.splice(idx, 1)[0];
+    setButtonDefault(removed.id);
+    refreshCart();
+  }
+
+  function setButtonAdded(id) {
+    var btn = document.getElementById('btn-' + id);
+    var card = document.getElementById('card-' + id);
+    if (btn) { btn.className = 'add-btn state-added'; btn.textContent = 'In Cart'; }
+    if (card) card.classList.add('in-cart-card');
+  }
+
+  function setButtonDefault(id) {
+    var btn = document.getElementById('btn-' + id);
+    var card = document.getElementById('card-' + id);
+    if (btn) { btn.className = 'add-btn state-default'; btn.textContent = '+ Add to Cart'; }
+    if (card) card.classList.remove('in-cart-card');
+  }
+
+  function refreshCart() {
+    var list = document.getElementById('cart-list');
+    var total = 0;
+    list.innerHTML = '';
+
+    if (cart.length === 0) {
+      list.innerHTML =
+        '<div class="empty-state">' +
+          
+          '<p>Nothing here yet.<br>Start adding stuff!</p>' +
+        '</div>';
+    } else {
+      cart.forEach(function(item) {
+        total += item.price;
+        var row = document.createElement('div');
+        row.className = 'cart-row';
+        row.innerHTML =
+          '<div class="cr-info">' +
+            '<div class="cr-name">' + item.name + '</div>' +
+            '<div class="cr-price">₱' + item.price.toLocaleString('en-PH', { minimumFractionDigits: 2 }) + '</div>' +
+          '</div>' +
+          '<button class="rm-btn" onclick="removeFromCart(' + item.cartId + ')">Remove</button>';
+        list.appendChild(row);
+      });
+    }
+
+    document.getElementById('cart-total').textContent = '₱' + total.toLocaleString('en-PH', { minimumFractionDigits: 2 });
+    document.getElementById('cart-count').textContent = cart.length;
+    document.getElementById('cart-count2').textContent = cart.length > 0 ? '(' + cart.length + ')' : '';
+    document.getElementById('order-btn').disabled = cart.length === 0;
+  }
+
+  function prepareCheckout() {
+    document.getElementById('cust_order').value = JSON.stringify(
+      cart.map(function(i) { return { prod_name: i.name, prod_price: i.price }; })
+    );
+  }
+
+  function findProduct(id) {
+    var keys = Object.keys(products);
+    for (var i = 0; i < keys.length; i++) {
+      for (var j = 0; j < products[keys[i]].length; j++) {
+        if (products[keys[i]][j].id === id) return products[keys[i]][j];
+      }
+    }
+    return null;
+  }
+
+
+  function filterCat(cat, btn) {
+    document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(function(s) {
+      s.style.display = (cat === 'all' || s.dataset.cat === cat) ? '' : 'none';
+    });
+  }
+
+  function showPage(name) {
+    document.getElementById('page-shop').classList.toggle('active', name === 'shop');
+    document.getElementById('page-about').classList.toggle('active', name === 'about');
+  }
+
+  var toastTimer;
+  function showToast(msg) {
+    document.getElementById('toast-msg').textContent = msg;
+    var t = document.getElementById('toast');
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2000);
+  }
+
+  renderProducts();
+  refreshCart();
+</script>
+</body>
+</html>
